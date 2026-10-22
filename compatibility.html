@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f8faff">
+<meta name="description" content="See your Warpvio website analysis and the checks still required before building an app.">
+<title>Website check results — Warpvio</title>
+<link rel="stylesheet" href="flow.css">
+</head>
+<body>
+<div class="page">
+<header class="header">
+<a class="brand" href="./index.html" aria-label="Warpvio home"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>warpvio<b>.</b></span></a>
+<div class="header-right"><div class="header-steps"><span class="current">01 Website</span><i class="sep"></i><span>02 Customize</span><i class="sep"></i><span>03 Export</span></div><a href="./index.html" class="back-link">← Back to home</a></div>
+</header>
+<main class="main">
+<div id="empty" hidden>
+<div class="eyebrow">Website Analysis</div>
+<h1>Nothing to review <span class="gradient">just yet.</span></h1>
+<p class="subhead">Start on the homepage to check a website.</p>
+<div class="actions"><a class="primary" href="./index.html">Start a website check ↗</a></div>
+</div>
+<div id="report" hidden>
+<div class="result-head">
+<div><div class="eyebrow">Analysis complete</div><h1>Your website.<br><span class="gradient">The first checks.</span></h1><p class="subhead">What we could verify from the public page, and what still needs testing inside a compiled app.</p></div>
+</div>
+<div class="summary">
+<section class="card overview">
+<div class="overview-top"><div class="site-icon" id="site-icon" aria-hidden="true">↗</div><div style="min-width:0"><h2 id="site-title"></h2><p id="site-url"></p></div></div>
+<div class="verdict"><div class="verdict-icon">✓</div><div><h3 id="verdict-title"></h3><p>Preliminary checks only. This is not a guarantee that an Android, Windows or macOS package will run correctly.</p></div></div>
+<div class="platform-tags" id="platforms"></div>
+</section>
+<aside class="card metrics" aria-label="Check summary">
+<div class="metric-row"><span>Checks passed</span><strong id="metric-pass">—</strong></div>
+<div class="metric-row"><span>Review items</span><strong id="metric-warn">—</strong></div>
+<div class="metric-row"><span>Redirects</span><strong id="metric-redirect">—</strong></div>
+</aside>
+</div>
+<div class="sections">
+<section class="card info-card">
+<p class="card-label">CONFIRMED WEB CHECKS</p><h2 class="card-title">What we found</h2>
+<div id="checks"></div>
+</section>
+<aside class="card info-card">
+<p class="card-label">IMPORTANT LIMITATIONS</p><h2 class="card-title">Still needs real testing</h2>
+<p style="font-size:12px;color:#8490a6;line-height:1.8">Website metadata alone cannot prove native compatibility. The points below are deliberately marked unverified.</p>
+<ul class="notice-list" id="unverified"></ul>
+</aside>
+</div>
+<div class="note" id="next-note">Your initial website checks are complete. Choose an app name, icon and launch style next. Native compatibility, purchases and app downloads are not enabled yet.</div>
+<div class="footer-actions"><a href="./index.html" class="secondary">← Check another website</a><a id="open-website" href="#" class="secondary" target="_blank" rel="noopener noreferrer">Open website ↗</a><a href="./customize.html" class="primary">Customize my app →</a></div>
+</div>
+<div class="outro">Warpvio · Deterministic HTTP/HTML checks · Native app testing is a separate build phase</div>
+</main>
+</div>
+<script>
+(()=>{
+'use strict';
+const report=document.querySelector('#report'),empty=document.querySelector('#empty');
+let data;
+try{data=JSON.parse(sessionStorage.getItem('warpvio_v1_result')||'null')}catch{}
+if(!data||data.version!==1||!Array.isArray(data.checks)||typeof data.finalUrl!=='string'){
+  empty.hidden=false;
+  return;
+}
+let url;try{url=new URL(data.finalUrl);if(!['http:','https:'].includes(url.protocol))throw Error()}catch{empty.hidden=false;return;}
+const set=(id,value)=>{document.getElementById(id).textContent=String(value??'')};
+set('site-title',data.title||url.hostname);
+set('site-url',url.hostname);
+set('site-icon',(data.title||url.hostname).charAt(0).toUpperCase());
+set('verdict-title',data.verdict||'Initial check completed');
+set('metric-pass',data.checks.filter(c=>c.status==='passed').length);
+set('metric-warn',data.checks.filter(c=>c.status==='warning').length);
+set('metric-redirect',Number.isInteger(data.redirects)?data.redirects:0);
+const open=document.getElementById('open-website');open.href=url.href;
+for(const name of (Array.isArray(data.platforms)?data.platforms:[])){
+  if(!['Windows','Android','macOS'].includes(name))continue;
+  const el=document.createElement('span');el.className='chip';el.textContent=name+' · selected, not native-tested';
+  document.getElementById('platforms').append(el);
+}
+const safeStatuses=['passed','warning','info'];
+for(const item of data.checks){
+  if(!item||typeof item!=='object')continue;
+  const status=safeStatuses.includes(item.status)?item.status:'info';
+  const row=document.createElement('div');row.className='check';
+  const badge=document.createElement('div');badge.className='dot '+status;badge.textContent=status==='passed'?'✓':status==='warning'?'!':'i';
+  const content=document.createElement('div');
+  const heading=document.createElement('h3');heading.textContent=String(item.label||'Check').slice(0,140);
+  const text=document.createElement('p');text.textContent=String(item.detail||'').slice(0,450);
+  content.append(heading,text);row.append(badge,content);
+  document.getElementById('checks').append(row);
+}
+for(const line of (Array.isArray(data.unverified)?data.unverified:[])){
+  const li=document.createElement('li');li.textContent=String(line).slice(0,500);
+  document.getElementById('unverified').append(li);
+}
+report.hidden=false;
+})();
+</script>
+</body>
+</html>

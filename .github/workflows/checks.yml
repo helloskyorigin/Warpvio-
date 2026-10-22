@@ -1,0 +1,26 @@
+name: Warpvio checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test website-analysis, checkout and app configuration
+        run: npm test
+      - name: Test Windows desktop builder without downloading Electron
+        working-directory: builder/windows
+        run: npm test
+      - name: Test Android WebView builder input rules and resources
+        working-directory: builder/android
+        run: node --test tests/*.test.cjs
+
+      - name: Test macOS QA builder on Linux without Apple tools
+        working-directory: builder/macos
+        run: npm test

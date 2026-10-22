@@ -1,0 +1,109 @@
+name: Android QA APK (debug signed)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "builder/android/**"
+  workflow_dispatch:
+    inputs:
+      website_url:
+        description: "Public HTTPS website you own / can package"
+        required: true
+        default: "https://example.com/"
+        type: string
+      app_name:
+        description: "ASCII app name (2-36 characters)"
+        required: true
+        default: "Warpvio QA Demo"
+        type: string
+      accent:
+        description: "Default app icon accent"
+        type: choice
+        required: true
+        default: blue
+        options:
+          - blue
+          - violet
+          - mint
+          - rose
+      orientation:
+        description: "Preferred Android orientation"
+        type: choice
+        required: true
+        default: auto
+        options:
+          - auto
+          - portrait
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-qa-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-android:
+    if: github.repository == 'helloskyorigin/Warpvio' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Test Android builder inputs and configuration
+        working-directory: builder/android
+        run: node --test tests/*.test.cjs
+
+      - name: Prepare app URL, name, icon and orientation
+        working-directory: builder/android
+        env:
+          APP_URL: ${{ inputs.website_url || 'https://example.com/' }}
+          APP_NAME: ${{ inputs.app_name || 'Warpvio QA Demo' }}
+          APP_ACCENT: ${{ inputs.accent || 'blue' }}
+          APP_ORIENTATION: ${{ inputs.orientation || 'auto' }}
+        run: node scripts/prepare.cjs
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK tools
+        uses: android-actions/setup-android@v4
+
+      - name: Install Android SDK 35 and build tools
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Set up Gradle 8.13
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.13"
+
+      - name: Build installable debug-key signed APK
+        working-directory: builder/android
+        run: gradle :app:assembleDebug --no-daemon --stacktrace
+
+      - name: Verify generated APK structure and debug signature
+        shell: bash
+        run: |
+          set -euo pipefail
+          apk="builder/android/app/build/outputs/apk/debug/app-debug.apk"
+          test -s "$apk"
+          unzip -t "$apk" >/dev/null
+          "$ANDROID_SDK_ROOT/build-tools/35.0.0/apksigner" verify --verbose "$apk"
+          "$ANDROID_SDK_ROOT/build-tools/35.0.0/aapt" dump badging "$apk" | head -n 5
+          echo "Android QA APK bytes: $(wc -c < "$apk")"
+
+      - name: Upload Android QA APK (not for Play Store)
+        uses: actions/upload-artifact@v4
+        with:
+          name: warpvio-android-debug-qa-${{ github.run_number }}
+          path: builder/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 3

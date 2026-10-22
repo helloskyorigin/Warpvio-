@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f8faff">
+<meta name="description" content="Warpvio checks your website before you package it as an app.">
+<title>Checking your website — Warpvio</title>
+<link rel="stylesheet" href="flow.css">
+</head>
+<body>
+<div class="page">
+<header class="header">
+<a class="brand" href="./index.html" aria-label="Warpvio home"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>warpvio<b>.</b></span></a>
+<div class="header-right"><div class="header-steps"><span class="current">01 Website</span><i class="sep"></i><span>02 Customize</span><i class="sep"></i><span>03 Export</span></div><a href="./index.html" class="back-link">← Back to home</a></div>
+</header>
+<main class="main narrow">
+<div class="eyebrow">Website Analysis</div>
+<h1>Let's check<br><span class="gradient">your website.</span></h1>
+<p class="subhead">Checking the public page before app customization. We'll only show what we can actually verify.</p>
+<section class="card scan-card" aria-label="Website analysis progress">
+<div class="site-row">
+<div class="site-icon" aria-hidden="true">↗</div>
+<div style="min-width:0;flex:1"><h3 id="site-name">Loading your website</h3><p id="site-url">Preparing your request</p></div>
+<div id="platforms" class="site-platforms"></div>
+</div>
+<div class="line"></div>
+<div class="scanner">
+<div class="scan-symbol" id="spinner" aria-hidden="true">✦</div>
+<div class="status" role="status" aria-live="polite"><h3 id="status-title">Preparing website check</h3><p id="status-detail">Validating your website address and selected platforms.</p></div>
+</div>
+<div id="error-panel" class="error-panel" role="alert" aria-live="assertive">
+<h3>We couldn't complete this check.</h3>
+<p id="error-message"></p>
+<div class="actions"><button id="retry" class="primary" type="button">Try again ↗</button><a href="./index.html" class="secondary">Change website</a></div>
+</div>
+<div class="note" id="scope-note">This scan inspects HTTP/HTML information only. It does not test login, payments, Android native behavior, Windows apps or macOS builds.</div>
+</section>
+<p class="outro">Secure requests · No account needed · No payment during analysis</p>
+</main>
+</div>
+<script>
+(()=>{
+'use strict';
+const REQUEST_KEY='warpvio_v1_request';
+const RESULT_KEY='warpvio_v1_result';
+const title=document.querySelector('#status-title');
+const detail=document.querySelector('#status-detail');
+const problem=document.querySelector('#error-panel');
+const message=document.querySelector('#error-message');
+const spinner=document.querySelector('#spinner');
+const retry=document.querySelector('#retry');
+let payload;
+try{payload=JSON.parse(sessionStorage.getItem(REQUEST_KEY)||'null')}catch{}
+const platforms=['Windows','Android','macOS'];
+if(!payload||typeof payload.url!=='string'||!Array.isArray(payload.platforms)||!payload.platforms.some(p=>platforms.includes(p))){
+  title.textContent='No website selected';
+  detail.textContent='Start on the homepage and select your website and target platforms.';
+  showError('Your previous website selection could not be found.');
+}else{
+  try{
+    const url=new URL(payload.url);
+    document.querySelector('#site-name').textContent=url.hostname;
+    document.querySelector('#site-url').textContent=url.href;
+  }catch{document.querySelector('#site-name').textContent='Website check'}
+  document.querySelector('#platforms').replaceChildren(...payload.platforms.filter(p=>platforms.includes(p)).map(p=>{
+    const tag=document.createElement('span');tag.className='chip';tag.textContent=p;return tag;
+  }));
+  run();
+}
+function showError(text){
+  spinner.classList.add('off');
+  spinner.style.opacity='.4';
+  problem.classList.add('visible');
+  title.textContent='Analysis stopped';
+  detail.textContent='No compatibility verdict has been generated.';
+  message.textContent=text;
+}
+async function run(){
+  problem.classList.remove('visible');
+  spinner.style.opacity='1';
+  title.textContent='Connecting to the website';
+  detail.textContent='Reading the public page through our website-check service.';
+  const controller=new AbortController();
+  const timeout=setTimeout(()=>controller.abort(),28000);
+  retry.disabled=true;
+  try{
+    sessionStorage.removeItem(RESULT_KEY);
+    const response=await fetch('./api/analyze',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({url:payload.url,platforms:payload.platforms}),
+      cache:'no-store',signal:controller.signal
+    });
+    const type=response.headers.get('content-type')||'';
+    if(!type.includes('application/json')){
+      throw new Error('Analysis API is not running on this host. Deploy Warpvio to a serverless host such as Vercel; GitHub Pages can only serve the frontend.');
+    }
+    const data=await response.json();
+    if(!response.ok||!data.ok||!data.result)throw new Error(data.error||'Unable to inspect this website.');
+    title.textContent='Website response received';
+    detail.textContent='The verified checks are ready to review.';
+    sessionStorage.setItem(RESULT_KEY,JSON.stringify(data.result));
+    window.location.assign('./compatibility.html');
+  }catch(error){
+    const text=error.name==='AbortError'
+      ? 'The request timed out. Check the website URL or try again.'
+      : error instanceof TypeError
+        ? 'Unable to reach the website-check API. This site needs a deployed backend, not just static GitHub Pages.'
+        : String(error.message||'Unknown error.');
+    showError(text);
+  }finally{clearTimeout(timeout);retry.disabled=false}
+}
+retry.addEventListener('click',run);
+})();
+</script>
+</body>
+</html>

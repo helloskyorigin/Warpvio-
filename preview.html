@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f8faff">
+<meta name="description" content="Review your Warpvio Windows, Android or macOS app configuration and proposed export price.">
+<title>Preview your app — Warpvio</title>
+<link rel="stylesheet" href="./flow.css">
+<link rel="stylesheet" href="./customize.css">
+<style>[hidden]{display:none!important}</style>
+<script defer src="./app-config.js"></script>
+<script defer src="./preview.js"></script>
+</head>
+<body>
+<div class="page">
+<header class="header">
+<a class="brand" href="./index.html" aria-label="Warpvio home"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>warpvio<b>.</b></span></a>
+<div class="header-right">
+<div class="header-steps"><span>01 Website</span><i class="sep"></i><span>02 Customize</span><i class="sep"></i><span class="current">03 Preview</span></div>
+<a class="back-link" href="./customize.html">← Edit app</a>
+</div>
+</header>
+<main class="custom-main">
+<section id="no-preview" class="empty-state" hidden>
+<div class="eyebrow">App preview</div>
+<h1>Your project <span class="gradient">isn't here yet.</span></h1>
+<p class="subhead">Start by choosing a website, then customize your app to see its order preview.</p>
+<a class="primary" href="./index.html">Start from your website ↗</a>
+</section>
+<div id="review" hidden>
+<div class="custom-intro">
+<div>
+<div class="eyebrow">03 · Review</div>
+<h1>Meet your <span class="gradient">new app.</span></h1>
+<p class="subhead">Review the branding and intended package settings before the build stage. This is a concept preview—not a compiled application.</p>
+</div>
+<div class="source-site"><span aria-hidden="true">↗</span><span id="source-url"></span></div>
+</div>
+<div class="review-layout">
+<section class="card review-card" aria-labelledby="review-heading">
+<p class="card-label">YOUR APP CONFIGURATION</p>
+<h2 class="card-title" id="review-heading" style="margin-bottom:4px">Ready to review</h2>
+<div class="review-identity">
+<div class="app-avatar" id="review-avatar"><span id="review-avatar-letter">A</span><img id="review-avatar-image" alt=""></div>
+<div style="min-width:0"><h2 id="review-name"></h2><p id="review-url"></p></div>
+</div>
+<div class="review-list">
+<div class="review-line"><span>Selected platforms</span><strong id="review-platforms"></strong></div>
+<div class="review-line"><span>Launch appearance</span><strong id="review-theme"></strong></div>
+<div class="review-line"><span>Accent color</span><strong id="review-accent"></strong></div>
+<div class="review-line" id="windows-review-row" hidden><span>Windows starting size</span><strong id="windows-review"></strong></div>
+<div class="review-line" id="mac-review-row" hidden><span>macOS starting size</span><strong id="mac-review"></strong></div>
+<div class="review-line" id="android-review-row" hidden><span>Android orientation</span><strong id="android-review"></strong></div>
+</div>
+<div class="pricing-summary">
+<div class="price-row"><span>Proposed one-time export price</span><strong id="review-price">—</strong></div>
+<p>This is a preview of planned pricing, not a charge or purchase. No free downloadable app export is available.</p>
+</div>
+<div class="readonly-note"><strong>Important:</strong> The app still depends on your existing live website. Signing, native testing, final compilation and payment verification are not implemented yet.</div>
+<a class="primary review-cta" href="./checkout.html">Review one-time export →</a>
+<a class="action-link" href="./customize.html" style="display:block;margin-top:11px;text-align:center;color:#5b76ad;font-weight:800;font-size:12px">← Edit app details</a>
+</section>
+<aside class="preview-pane" aria-label="Appearance mockup">
+<div class="preview-top"><h2>Launch preview</h2><span class="preview-tag">Concept only</span></div>
+<div id="platform-tabs" class="platform-picker" style="padding:18px 24px 0" role="group" aria-label="Choose platform preview"></div>
+<div class="preview-inner" id="preview-inner" data-theme="system">
+<div class="mock-desktop" id="mock-desktop"><div class="mock-titlebar"><span class="circle"></span><span class="circle"></span><span class="circle"></span><strong id="desktop-app-label"></strong></div>
+<div class="mock-desktop-content"><div class="splash-content">
+<div class="app-avatar" data-avatar><span>A</span><img alt="" data-avatar-img></div>
+<h3 data-app-label></h3><p class="preview-url" data-site-url></p><div class="preview-loader"><i data-preview-progress></i></div>
+</div></div></div>
+<div class="mock-phone" id="mock-phone" hidden><div class="phone-notch"></div><div class="phone-screen"><div class="splash-content">
+<div class="app-avatar" data-avatar><span>A</span><img alt="" data-avatar-img></div>
+<h3 data-app-label></h3><p class="preview-url" data-site-url></p><div class="preview-loader"><i data-preview-progress></i></div>
+</div></div></div>
+</div>
+<div class="preview-foot"><p><strong>Production integration remaining:</strong> secure checkout and actual build workers. You can review your saved settings now, but Warpvio cannot generate EXE, APK or DMG files yet.</p></div>
+</aside>
+</div>
+</div>
+</main>
+</div>
+</body>
+</html>

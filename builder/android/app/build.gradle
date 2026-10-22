@@ -1,0 +1,60 @@
+import groovy.json.JsonOutput
+
+plugins {
+    id 'com.android.application'
+}
+
+def values = new Properties()
+def generated = rootProject.file('generated/app.properties')
+if (!generated.isFile()) {
+    throw new GradleException('App config missing. First run: node scripts/prepare.cjs')
+}
+generated.withInputStream { stream -> values.load(stream) }
+
+for (key in ['applicationId', 'appName', 'siteUrl', 'accentColor', 'orientation']) {
+    if (!values.getProperty(key)) {
+        throw new GradleException("Missing generated Android QA value: ${key}")
+    }
+}
+
+android {
+    namespace 'com.warpvio.shell'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId values.getProperty('applicationId')
+        minSdk 26
+        targetSdk 35
+        versionCode 1
+        versionName '0.1.0-qa'
+
+        // Generated config is baked into Java BuildConfig at compile time.
+        // All values are quoted via Groovy JSON serialization, not string
+        // interpolation into executable Java source.
+        buildConfigField 'String', 'SITE_URL', JsonOutput.toJson(values.getProperty('siteUrl'))
+        buildConfigField 'String', 'APP_NAME', JsonOutput.toJson(values.getProperty('appName'))
+        buildConfigField 'String', 'ACCENT_COLOR', JsonOutput.toJson(values.getProperty('accentColor'))
+        resValue 'string', 'app_name', values.getProperty('appName')
+        manifestPlaceholders = [warpvioOrientation: values.getProperty('orientation')]
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+        }
+        release {
+            minifyEnabled false
+            // Release signing is intentionally NOT configured.
+            // Never publish or sell this QA build.
+        }
+    }
+}

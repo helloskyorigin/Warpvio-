@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f8faff">
+<meta name="description" content="Save your app setup and verify domain ownership before secure export.">
+<title>Verify your app project — Warpvio</title>
+<link rel="stylesheet" href="./flow.css">
+<link rel="stylesheet" href="./checkout.css">
+<style>
+[hidden]{display:none!important}
+.project-grid{display:grid;grid-template-columns:1fr .86fr;gap:23px;align-items:start}
+.ownership-card{padding:30px;border:1px solid #e6ebf6;border-radius:24px;background:#ffffffeb;box-shadow:0 15px 48px #5668a914}
+.project-kicker{font-size:10px;letter-spacing:1.7px;font-weight:800;color:#6881b6;margin-bottom:12px}
+.project-title{font-size:23px;letter-spacing:-.9px;margin:0 0 13px}
+.project-copy{font-size:13px;line-height:1.8;color:#7a89a3}
+.record{margin-top:18px;padding:16px;border:1px solid #e2e9f7;background:#f6f9ff;border-radius:15px}
+.record label{display:block;color:#8999b5;font-size:10px;font-weight:800;letter-spacing:1px;margin-bottom:9px}
+.record code{display:block;font-size:12px;color:#26375b;overflow-wrap:anywhere;line-height:1.7;font-family:ui-monospace,monospace}
+.buttons{display:flex;flex-wrap:wrap;gap:9px;margin-top:20px}
+.buttons button,.buttons a{padding:13px 16px;border-radius:12px;font-size:12px;font-weight:800}
+.action{border:0;background:linear-gradient(110deg,#127eff,#7c5af8);color:#fff}
+.outline{border:1px solid #dfe5f4;background:#fff;color:#4b6fac}
+.status-note{margin-top:17px;padding:15px;background:#f4f7fd;border:1px solid #e2e9f8;border-radius:14px;font-size:12px;color:#586f9a;line-height:1.7}
+.status-note:empty{display:none}
+.step-items{margin:16px 0 0;padding-left:19px;color:#71809a;font-size:12px;line-height:2}
+code{user-select:all}
+small{display:block;color:#95a1b6;line-height:1.7;margin-top:14px}
+@media(max-width:820px){.project-grid{grid-template-columns:1fr}}
+@media(max-width:520px){.ownership-card{padding:22px}.project-title{font-size:21px}}
+</style>
+<script defer src="./app-config.js"></script>
+<script defer src="./project.js"></script>
+</head>
+<body><div class="page">
+<header class="header"><a class="brand" href="./index.html" aria-label="Warpvio home"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>warpvio<b>.</b></span></a><a class="back-link" href="./checkout.html">← Order review</a></header>
+<main class="order-main">
+<div class="order-title"><div class="eyebrow">Project ownership</div><h1>Almost your <span class="gradient">app.</span></h1><p>Securely save your configuration, then prove you control the website you're packaging. This is free and does not charge a card.</p></div>
+<section id="missing" class="ownership-card" hidden><h2 class="project-title">Start with a website.</h2><p class="project-copy">Your app configuration isn't available in this browser tab.</p><a class="primary" style="margin-top:19px" href="./index.html">Start from home ↗</a></section>
+<div class="project-grid" id="project" hidden>
+<section class="ownership-card">
+<div class="project-kicker">01 · SAVE THE PROJECT</div>
+<h2 class="project-title" id="project-name">App setup</h2>
+<p class="project-copy" id="project-domain"></p>
+<p class="project-copy" id="project-plan" style="margin-top:11px"></p>
+<div id="save-step"><div class="status-note">Your app settings are currently in this browser tab. Use the button below to save a private, unpaid project on the server.</div><div class="buttons"><button id="create" type="button" class="action">Save project securely ↗</button></div></div>
+<div id="saved-step" hidden>
+<div class="status-note" id="save-status">Private draft created.</div>
+<div class="buttons">
+<button id="copy-recovery" type="button" class="outline">Copy private recovery link</button>
+<button id="refresh" type="button" class="outline">Refresh status ↻</button>
+</div>
+<small>The recovery link contains a secret access token. Keep it private. Drafts expire after 24 hours; this is not email recovery or a purchase receipt.</small>
+</div>
+<p class="status-note" id="error-status" role="alert" hidden></p>
+</section>
+<section class="ownership-card" id="domain-step" hidden>
+<div class="project-kicker">02 · VERIFY THE WEBSITE</div>
+<h2 class="project-title">Verify domain ownership</h2>
+<p class="project-copy">Add one TXT record to the DNS settings for your website's exact hostname. Keep it until ownership is verified.</p>
+<div class="record"><label>TXT RECORD NAME / HOST</label><code id="txt-host"></code></div>
+<div class="record"><label>TXT RECORD VALUE</label><code id="txt-value"></code></div>
+<ol class="step-items"><li>Open your domain's DNS provider.</li><li>Create a TXT record using the host and value above.</li><li>Save it, then click Verify. DNS updates may take some time.</li></ol>
+<div class="buttons"><button id="copy-value" type="button" class="outline">Copy TXT value</button><button id="verify" type="button" class="action">Verify DNS ↗</button><button id="upload-icon" type="button" class="outline" hidden>Upload selected icon securely</button></div>
+<div class="status-note" id="verification-status" role="status" aria-live="polite">Awaiting DNS verification.</div>
+<div class="status-note"><strong>Payment and builds:</strong> Disabled until tested installers, signing, authenticated delivery and fulfillment are available. A verified domain alone cannot unlock a download.</div>
+</section>
+</div>
+<p class="order-support">Warpvio · Website ownership check · Private draft access · No live checkout</p>
+</main></div>
+</body></html>

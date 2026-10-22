@@ -1,0 +1,11 @@
+# Windows QA build outputs - never commit binaries or customer configuration
+node_modules/
+dist/
+build/
+release/
+app/generated-config.json
+assets/icon.png
+assets/icon.ico
+build-config.json
+*.exe
+*.blockmap

@@ -1,0 +1,91 @@
+name: macOS QA DMG (unsigned)
+on:
+  push:
+    branches: [main]
+    paths:
+      - "builder/macos/**"
+      - "builder/windows/app/**"
+      - "builder/windows/scripts/icon.cjs"
+      - ".github/workflows/macos-qa.yml"
+  workflow_dispatch:
+    inputs:
+      website_url:
+        description: Public HTTPS URL of your own test website
+        type: string
+        required: true
+        default: https://example.com/
+      app_name:
+        description: App name (2-36 characters)
+        type: string
+        required: true
+        default: Warpvio QA Demo
+      accent:
+        type: choice
+        options: [blue, violet, mint, rose]
+        required: true
+        default: blue
+      window_size:
+        type: choice
+        options: [standard, compact]
+        required: true
+        default: standard
+
+permissions:
+  contents: read
+concurrency:
+  group: macos-qa-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  dmg:
+    if: github.repository == 'helloskyorigin/Warpvio' && github.ref == 'refs/heads/main'
+    runs-on: macos-15
+    timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [arm64, x64]
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: "false"
+      APP_URL: ${{ inputs.website_url || 'https://example.com/' }}
+      APP_NAME: ${{ inputs.app_name || 'Warpvio QA Demo' }}
+      APP_ACCENT: ${{ inputs.accent || 'blue' }}
+      APP_SIZE: ${{ inputs.window_size || 'standard' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate local macOS generator
+        working-directory: builder/macos
+        run: node --test tests/*.test.cjs
+      - name: Generate app identity, icon and safe Electron shell
+        working-directory: builder/macos
+        run: node scripts/prepare.cjs
+      - name: Convert 256 PNG into native macOS ICNS icon
+        working-directory: builder/macos
+        run: node scripts/make-icns.cjs
+      - name: Install pinned Electron builder
+        working-directory: builder/macos
+        run: npm install --no-audit --no-fund
+      - name: Compile macOS DMG for requested CPU
+        working-directory: builder/macos
+        run: npm run build:mac -- --${{ matrix.arch }}
+      - name: Verify a real disk image was created
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          images=(builder/macos/dist/*.dmg)
+          test "${#images[@]}" -gt 0
+          for image in "${images[@]}"; do
+            test "$(stat -f %z "$image")" -gt 1000000
+            hdiutil verify "$image"
+          done
+      - name: Upload unsigned DMG for developer QA
+        uses: actions/upload-artifact@v4
+        with:
+          name: warpvio-macos-qa-${{ matrix.arch }}-${{ github.run_number }}
+          path: builder/macos/dist/*.dmg
+          if-no-files-found: error
+          retention-days: 3

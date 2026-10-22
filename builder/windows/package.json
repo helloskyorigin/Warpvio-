@@ -1,0 +1,21 @@
+{
+  "name": "warpvio-windows-builder",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Warpvio Windows QA application shell and NSIS installer builder",
+  "main": "app/main.cjs",
+  "author": "Warpvio",
+  "license": "UNLICENSED",
+  "scripts": {
+    "test": "node --test",
+    "prepare:demo": "node scripts/prepare.cjs --url https://example.com/ --name Warpvio-Demo --accent blue",
+    "build:windows": "electron-builder --config build-config.json --win nsis --x64 --publish never"
+  },
+  "devDependencies": {
+    "electron": "44.9.3",
+    "electron-builder": "26.17.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

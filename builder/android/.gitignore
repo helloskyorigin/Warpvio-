@@ -1,0 +1,11 @@
+# Generated customer/test configuration and packaged APKs
+.gradle/
+build/
+**/build/
+local.properties
+generated/
+app/src/main/res/drawable-nodpi/warpvio_icon.png
+*.apk
+*.aab
+*.jks
+*.keystore

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f8faff">
+<meta name="description" content="Review one-time Warpvio application export pricing. Checkout will open once real builds can be delivered.">
+<title>One-time checkout — Warpvio</title>
+<link rel="stylesheet" href="./flow.css">
+<link rel="stylesheet" href="./checkout.css">
+<style>[hidden]{display:none!important}</style>
+<script defer src="./app-config.js"></script>
+<script defer src="./checkout.js"></script>
+</head>
+<body>
+<div class="page">
+<header class="header">
+<a class="brand" href="./index.html" aria-label="Warpvio home"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>warpvio<b>.</b></span></a>
+<div class="header-right">
+<div class="header-steps"><span>01 Website</span><i class="sep"></i><span>02 Customize</span><i class="sep"></i><span class="current">03 Order review</span></div>
+<a class="back-link" href="./preview.html">← App preview</a>
+</div>
+</header>
+<main class="order-main">
+<section id="no-order" class="empty" hidden>
+<div class="eyebrow">Order review</div>
+<h1>Your app begins <span class="gradient">with a website.</span></h1>
+<p>No active app configuration was found in this browser tab. Enter your website URL to begin again.</p>
+<a class="primary" href="./index.html">Start from home ↗</a>
+</section>
+<div id="order-page" hidden>
+<div class="order-title">
+<div class="eyebrow">One-time export</div>
+<h1>A simple price.<br><span class="gradient">No subscription.</span></h1>
+<p>Review your configuration and proposed export price. Payments stay disabled until the native app-building service is tested and ready to deliver actual files.</p>
+</div>
+<div class="order-grid">
+<section class="order-card" aria-labelledby="your-order">
+<p class="order-eyebrow">YOUR ORDER</p>
+<h2 id="your-order">App configuration</h2>
+<div class="order-identity">
+<div class="order-icon" id="order-icon"><span id="order-letter">A</span><img id="order-icon-img" alt=""></div>
+<div style="min-width:0"><strong id="order-app-name">Your app</strong><p id="order-website"></p></div>
+</div>
+<p class="order-eyebrow">SELECTED EXPORTS</p>
+<div class="order-platforms" id="order-platforms"></div>
+<div class="order-detail"><span>Launch appearance</span><strong id="order-theme"></strong></div>
+<div class="order-detail"><span>One website</span><strong>Selected online URL</strong></div>
+<div class="order-detail"><span>Update behavior</span><strong>Loads your hosted site</strong></div>
+<div class="order-notice">
+<strong>What the purchase will include</strong>
+<p>Once enabled, a one-time purchase will be for one website and one successful build per purchased platform. The original website hosting is separate. Windows/macOS signing, Android installation and future rebuild terms will be disclosed before payment.</p>
+</div>
+<ul class="order-points">
+<li>App name, icon and launch style chosen by you.</li>
+<li>No free file exports and no recurring Warpvio plan.</li>
+<li>Native compilation and platform compatibility must pass before fulfillment.</li>
+</ul>
+</section>
+<aside class="order-card" aria-labelledby="order-summary">
+<p class="order-eyebrow">SECURE ORDER REVIEW</p>
+<h2 id="order-summary">Price breakdown</h2>
+<div id="order-lines" class="summary-lines" aria-live="polite"></div>
+<div class="total-row"><span>Estimated total</span><strong id="order-total">$— <small>USD</small></strong></div>
+<p class="billing-key">One-time export estimate · No monthly subscription · Final checkout pricing will be verified by the payment provider.</p>
+<div class="payment-box" role="status">
+<div class="payment-symbol" aria-hidden="true">⌁</div>
+<div>
+<strong>Checkout isn't accepting payments yet</strong>
+<p id="checkout-status">Developer-only QA builders exist for Windows, Android and macOS. Signed production builds, verified payments and private downloads are not available yet.</p>
+</div>
+</div>
+<button class="checkout-disabled" type="button" disabled aria-disabled="true">Secure checkout not yet available</button>
+<a class="action-link" href="./project.html" style="color:#246ce3;border-color:#b7cafa">Save project &amp; verify domain →</a>
+<a class="action-link" href="./preview.html">← Back to app preview</a>
+<p class="order-support">No payment collected. No files are generated in this phase.</p>
+<p class="dodo-note">Dodo Payments sandbox integration prepared for developer testing.</p>
+</aside>
+</div>
+</div>
+</main>
+</div>
+</body>
+</html>

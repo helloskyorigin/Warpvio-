@@ -1,0 +1,51 @@
+{
+  "version": 2,
+  "functions": {
+    "api/analyze.js": {
+      "maxDuration": 20
+    },
+    "api/checkout.js": {
+      "maxDuration": 15
+    },
+    "api/dodo-webhook.js": {
+      "maxDuration": 10
+    },
+    "api/order.js": {
+      "maxDuration": 15
+    },
+    "api/order-status.js": {
+      "maxDuration": 15
+    },
+    "api/verify-domain.js": {
+      "maxDuration": 15
+    },
+    "api/icon-upload.js": {
+      "maxDuration": 15
+    },
+    "api/icon-confirm.js": {
+      "maxDuration": 15
+    },
+    "api/download.js": {
+      "maxDuration": 15
+    }
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+name: Windows QA installer (unsigned)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "builder/windows/**"
+  workflow_dispatch:
+    inputs:
+      website_url:
+        description: "Public HTTPS website you own or have permission to wrap"
+        required: true
+        type: string
+        default: "https://example.com/"
+      app_name:
+        description: "App name (2-36 letters/numbers; spaces allowed)"
+        required: true
+        type: string
+        default: "Warpvio Demo"
+      accent:
+        description: "Default app icon accent"
+        type: choice
+        required: true
+        default: blue
+        options:
+          - blue
+          - violet
+          - mint
+          - rose
+      window_size:
+        description: "Desktop window size"
+        type: choice
+        required: true
+        default: standard
+        options:
+          - standard
+          - compact
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-qa-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-windows:
+    if: github.repository == 'helloskyorigin/Warpvio' && github.ref == 'refs/heads/main'
+    runs-on: windows-latest
+    timeout-minutes: 45
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: "false"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Validate builder logic
+        working-directory: builder/windows
+        run: npm test
+
+      - name: Generate desktop app config and icon
+        working-directory: builder/windows
+        env:
+          APP_URL: ${{ inputs.website_url || 'https://example.com/' }}
+          APP_NAME: ${{ inputs.app_name || 'Warpvio QA Demo' }}
+          APP_ACCENT: ${{ inputs.accent || 'blue' }}
+          APP_SIZE: ${{ inputs.window_size || 'standard' }}
+        run: node scripts/prepare.cjs
+
+      - name: Install pinned Electron and packaging tools
+        working-directory: builder/windows
+        run: npm install --no-audit --no-fund
+
+      - name: Build actual Windows x64 NSIS installer
+        working-directory: builder/windows
+        run: npm run build:windows
+
+      - name: Verify setup executable exists
+        shell: pwsh
+        run: |
+          $files = @(Get-ChildItem -Path "builder/windows/dist" -Filter "*.exe" -File)
+          if ($files.Count -eq 0) { throw "No Windows installer was produced." }
+          foreach ($file in $files) {
+            Write-Output "$($file.Name) - $($file.Length) bytes"
+            if ($file.Length -lt 1000000) { throw "Installer is suspiciously small." }
+          }
+
+      - name: Upload unsigned installer (manual QA only)
+        uses: actions/upload-artifact@v4
+        with:
+          name: warpvio-windows-qa-${{ github.run_number }}
+          path: builder/windows/dist/*.exe
+          if-no-files-found: error
+          retention-days: 3

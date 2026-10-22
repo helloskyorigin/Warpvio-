@@ -1,0 +1,5 @@
+{
+  "name": "Warpvio",
+  "description": "Turn your website into an installable Windows, Android, or macOS app. One link, no code, one-time pricing.",
+  "permissions": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "warpvio-macos-qa-builder",
+  "version": "0.1.0",
+  "private": true,
+  "main": "app/main.cjs",
+  "description": "Warpvio macOS QA DMG shell (not signed/notarized)",
+  "scripts": {
+    "test": "node --test",
+    "prepare:demo": "node scripts/prepare.cjs --url https://example.com/ --name 'Warpvio QA Demo' --accent blue",
+    "build:mac": "electron-builder --config build-config.json --mac dmg --publish never"
+  },
+  "devDependencies": {
+    "electron": "44.9.3",
+    "electron-builder": "26.17.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f8faff">
+<meta name="description" content="Customize your Warpvio app name, icon, theme and launch experience before checkout.">
+<title>Customize your app — Warpvio</title>
+<link rel="stylesheet" href="./flow.css">
+<link rel="stylesheet" href="./customize.css">
+<style>[hidden]{display:none!important}</style>
+<script defer src="./app-config.js"></script>
+<script defer src="./customize.js"></script>
+</head>
+<body>
+<div class="page">
+<header class="header">
+<a class="brand" href="./index.html" aria-label="Warpvio home"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>warpvio<b>.</b></span></a>
+<div class="header-right">
+<div class="header-steps"><span>01 Website</span><i class="sep"></i><span class="current">02 Customize</span><i class="sep"></i><span>03 Preview</span></div>
+<a class="back-link" href="./compatibility.html">← Website checks</a>
+</div>
+</header>
+<main class="custom-main">
+<section id="no-result" class="empty-state" hidden>
+<div class="eyebrow">App Customization</div>
+<h1>Start with your <span class="gradient">website.</span></h1>
+<p class="subhead">We need a completed website analysis before creating an app configuration.</p>
+<a class="primary" href="./index.html">Enter a website URL ↗</a>
+</section>
+<div id="editor" hidden>
+<div class="custom-intro">
+<div>
+<div class="eyebrow">02 · Make it yours</div>
+<h1>Shape your <span class="gradient">app identity.</span></h1>
+<p class="subhead">Give your website a name, icon and launch appearance. Simple settings, with a preview that responds as you edit.</p>
+</div>
+<div class="source-site"><span aria-hidden="true">↗</span><span id="source-url"></span></div>
+</div>
+<div class="custom-layout">
+<form id="custom-form" class="settings" novalidate>
+<section class="setting-card" aria-labelledby="identity-title">
+<div class="setting-heading"><h2 id="identity-title">Your app</h2><span>Identity</span></div>
+<div class="app-identity">
+<div class="icon-control">
+<div class="icon-square" id="editor-icon" aria-label="App icon preview"><span class="icon-text">A</span><img id="editor-icon-image" alt=""></div>
+<label class="upload-action" for="upload-icon">Upload icon</label>
+<input class="icon-file" id="upload-icon" type="file" accept="image/png,image/jpeg,image/webp">
+<button class="ghost-button" id="reset-icon" type="button" hidden>Reset icon</button>
+</div>
+<div>
+<label class="field-label" for="app-name">App name</label>
+<input class="text-field" id="app-name" type="text" maxlength="36" autocomplete="off" spellcheck="false" required aria-describedby="name-hint" placeholder="My App">
+<div class="char-count"><span id="name-count">0</span>/36</div>
+<p class="field-description" id="name-hint">Shown in the generated app's title and launch preview.</p>
+</div>
+</div>
+<p class="field-description" id="icon-help">PNG, JPG or WebP · Up to 4 MB · Automatically cropped into a square for preview. Not uploaded to a server.</p>
+<p id="icon-error" class="custom-error" role="alert" hidden></p>
+</section>
+<section class="setting-card" aria-labelledby="appearance-title">
+<div class="setting-heading"><h2 id="appearance-title">Appearance</h2><span>Look & feel</span></div>
+<label class="field-label">App accent</label>
+<div class="edit-color-row" id="accent-options" role="group" aria-label="Select app accent">
+<button type="button" class="swatch" data-accent="blue" style="background:#3478f6" aria-label="Blue accent" aria-pressed="true">✓</button>
+<button type="button" class="swatch" data-accent="violet" style="background:#825df5" aria-label="Violet accent" aria-pressed="false">✓</button>
+<button type="button" class="swatch" data-accent="mint" style="background:#168f91" aria-label="Mint accent" aria-pressed="false">✓</button>
+<button type="button" class="swatch" data-accent="rose" style="background:#d85f89" aria-label="Rose accent" aria-pressed="false">✓</button>
+</div>
+<p class="field-description">Accent styles the app shell preview, not your website's own CSS.</p>
+<div class="field-spacing">
+<label class="field-label">Launch appearance</label>
+<div class="segment" id="theme-options" role="group" aria-label="App launch theme">
+<button type="button" data-theme="system" aria-pressed="true">System</button>
+<button type="button" data-theme="light" aria-pressed="false">Light</button>
+<button type="button" data-theme="dark" aria-pressed="false">Dark</button>
+</div>
+<p class="field-description">Controls the launch shell only. Your actual site still determines its own theme.</p>
+</div>
+</section>
+<section class="setting-card" aria-labelledby="platform-title">
+<div class="setting-heading"><h2 id="platform-title">Platform settings</h2><span>Fine-tune</span></div>
+<p class="field-description" style="margin-top:-8px;margin-bottom:17px">Only your selected platforms appear here. Switch to adjust each one.</p>
+<div id="platform-tabs" class="platform-picker" role="group" aria-label="Choose platform to customize"></div>
+<div class="platform-options">
+<div id="windows-settings" hidden>
+<h3>Windows app window</h3><p>Choose the starting window size for the generated desktop package.</p>
+<label class="platform-caption" for="windows-size">INITIAL WINDOW</label>
+<select class="select-field" id="windows-size">
+<option value="standard">Standard · 1200 × 800</option>
+<option value="compact">Compact · 960 × 700</option>
+</select>
+</div>
+<div id="android-settings" hidden>
+<h3>Android launch</h3><p>Choose an orientation preference. Final behavior depends on the Android build and device.</p>
+<label class="platform-caption" for="android-orientation">ORIENTATION</label>
+<select class="select-field" id="android-orientation">
+<option value="auto">Follow device</option>
+<option value="portrait">Portrait preferred</option>
+</select>
+</div>
+<div id="mac-settings" hidden>
+<h3>macOS app window</h3><p>Set the intended first window size for the macOS desktop package.</p>
+<label class="platform-caption" for="mac-size">INITIAL WINDOW</label>
+<select class="select-field" id="mac-size">
+<option value="standard">Standard · 1200 × 800</option>
+<option value="compact">Compact · 960 × 700</option>
+</select>
+</div>
+</div>
+<p class="field-description">These preferences become build settings later; no native package is compiled here.</p>
+</section>
+<div class="custom-actions">
+<div><strong style="font-size:13px">Your setup is saved in this browser tab.</strong><p class="action-note">Free to customize · No files or exports unlocked</p></div>
+<button type="submit" class="primary">Continue to preview ↗</button>
+</div>
+<p id="form-error" class="custom-error" role="alert" hidden></p>
+</form>
+<aside class="preview-pane" aria-label="Live appearance preview">
+<div class="preview-top"><h2>Live preview</h2><span class="preview-tag" id="preview-platform-label">Windows · Concept</span></div>
+<div class="preview-inner" id="preview-inner" data-theme="system">
+<div class="mock-desktop" id="mock-desktop">
+<div class="mock-titlebar"><span class="circle"></span><span class="circle"></span><span class="circle"></span><strong id="desktop-app-label">Your app</strong></div>
+<div class="mock-desktop-content"><div class="splash-content">
+<div class="app-avatar" data-avatar><span>A</span><img alt="" data-avatar-img></div>
+<h3 data-app-label>App name</h3><p class="preview-url" data-site-url></p>
+<div class="preview-loader"><i data-preview-progress></i></div>
+</div></div>
+</div>
+<div class="mock-phone" id="mock-phone" hidden><div class="phone-notch" aria-hidden="true"></div><div class="phone-screen"><div class="splash-content">
+<div class="app-avatar" data-avatar><span>A</span><img alt="" data-avatar-img></div>
+<h3 data-app-label>App name</h3><p class="preview-url" data-site-url></p>
+<div class="preview-loader"><i data-preview-progress></i></div>
+</div></div></div>
+</div>
+<div class="preview-foot"><p><strong>Preview only.</strong> This is an illustration of your app's launch shell, not a screenshot of your website or an installed native application.</p></div>
+</aside>
+</div>
+</div>
+</main>
+</div>
+</body>
+</html>

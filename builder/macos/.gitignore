@@ -1,0 +1,11 @@
+node_modules/
+dist/
+app/main.cjs
+app/security.cjs
+app/offline.html
+app/generated-config.json
+assets/icon.png
+assets/icon.icns
+build-config.json
+*.dmg
+*.blockmap
